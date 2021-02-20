@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #000000;
+}
+    
+    .slider{
+        width:100%;
+        height:20px;
+        background:#000000;
+    }
+    p{
+        font-size: 40px;
+        color:red;
+    }
+    .panel{
+        border:2px solid #00ff00;
+        align-content: space-between;
+    }
+    
+    .flame{
+        background-image: linear-gradient(red, yellow);
+    }
+    .box{
+        float: left;
+        width:460px;
+        height:105px;
+        padding:15px;
+        outline-color: #dddddd;
+        outline:5px solid white;
+        background-color:#888888;
+    }
+    .terra{
+        font-family: Arial;
+        font-style: italic;
+        font-size:22px;
+    }
+    .terraBlue{
+        font-family: Arial;
+        font-style: italic;
+        font-size:22px;
+        color:blue; 
+    }
+    .terraButton{
+        font-family: Arial;
+        font-style: italic;
+        font-size:24px;
+        background-color: "#aaaaaa";
+        height:50px;
+    }
+     .terraButtonNAV{
+        font-family: Arial;
+        font-style: italic;
+        font-size:24px;
+         color: lightblue;
+        background-color: "#0000aa;
+        height:50px;
+    }
+      .terraButtonBlue{
+        font-family: Arial;
+        font-style: italic;
+        font-size:24px;
+          color:white;
+        background-color: darkorange;
+          /*background-image: linear-gradient(red, yellow);*/
+          
+        height:50px;
+    }
+</style>
+</head>
+    <body onload="startGame()" >
+<script>
+var screenWidth;
+var screenHeight;
+    
+var myGamePiece;
+var rocketWidth;
+var rocketHeight;
+var exhaust;
+var exLeft;
+var exRight;
+var thruster;
+var thrustReading;
+var thrustGauge;
+var thrustBar;
+
+
+    
+var starPop;
+var starPopWidth;
+var StarPopHeight;
+    
+var landingPad;
+var alien;
+var wurm;
+
+var boom;
+
+
+    
+    
+var myBackground;
+var terra;
+var terraHill4;
+var terraHeight;
+
+
+var gameState;
+var holdState;
+var transX;
+var originX;
+var controllerX;
+var controllerY;
+var hold;
+    
+var actionState;
+var demo;
+var frameCount;
+    var nextButton;
+var sodaTime;
+    
+var scoreMessage;
+var message2;var message3;var message4;var message5;
+var message6;var message7;var message8;var message9;
+    var messageMath;
+    
+var Title;
+var titleDrop;
+    
+var cactus1;
+var cactus2;
+var cactus3;
+    var cactusX1; var cactusX2;
+    var cactusY1; var cactusY2;
+    var cacti = [];
+    
+var barrier1;
+var barrier2;
+var barrier3;
+var barrier4;
+var tag1;
+    
+var moon;
+var terraBase;
+    
+var fuelBarGreen;    
+var fuelPump;
+var fuelArm;
+var refuel;
+var fuelStation;
+    
+var chemTank1;var chemTank2; var chemTank3;
+var pipes;
+    
+var controller;
+var scoreBoard;
+var score;
+    
+    
+function startGame() {
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+   
+    gameState= 1;
+    transX = 0;
+    originX = 0;
+    controllerX = 100;
+    controllerY = 460;
+    hold=true;
+    demo = 0;
+    actionState=0;
+    refuel = 0;
+    sodaTime=0;
+    terraHeight = 200;
+    
+    
+    Title = new component("100px", "Tahoma", "#0000dd", 200, screenHeight/2, "text");
+    titleDrop = new component("120px", "Tahoma", "#0000dd", 200, -50, "text");
+    terra = new component(screenWidth, terraHeight, "terra2.png", 0, screenHeight - terraHeight , "image");
+    //terraX = new component(screenWidth, terraHeight, "marsHill.png", screenWidth, screenHeight - terraHeight , "image");
+    terraY = new component(screenWidth, terraHeight, "terraX.png", -screenWidth, screenHeight - terraHeight , "image");
+    terraHill = new component(screenWidth, 1.8*terraHeight, "marsHill4.png", screenWidth, screenHeight - 1.8*terraHeight , "image");
+    terraHill2 = new component(screenWidth, 1.8*terraHeight, "marsHill6.png", 2*screenWidth, screenHeight - 1.8*terraHeight , "image");
+    rocketWidth = 121;
+    rocketHeight = 158;
+    myGamePiece = new component(rocketWidth, rocketHeight, "sarahRocket.png", 400, 240, "image");
+    thrustGauge = new component("20px", "Tahoma", "aqua", 32 + originX, screenHeight - 12, "text");
+    verticalSpeed = new component("15px", "Tahoma", "#666666", 35 + originX, screenHeight - 300, "text");
+    
+    fuelBarGray = new component(200,40, "gray", screenWidth - 210, screenHeight - 40);
+    fuelBarGreen = new component(180,32, "#00dd00",screenWidth - 210  , screenHeight-36);
+    fuelGauge = new component("28px", "Tahoma", "white", screenWidth-265, screenHeight-12, "text");
+    
+    exhaust = new component(41, 88, "rocketPlume.png", 0, 180, "image");
+    exLeft = new component(41, 13, "rocketPlumeL.png", 0, 180, "image");
+    exRight = new component(41, 13, "rocketPlumeR.png", 0, 180, "image");
+    
+    starPopWidth = 120;
+    StarPopHeight = 165;
+    starPop = new component(starPopWidth, StarPopHeight, "starPop.png", 200, screenHeight -220, "image");
+    wurm = new component(200, 50, "wurm.png", 50, screenHeight - 70, "image");
+    
+    landingPad = new component(200, 10, "#00dd00", screenWidth-150, screenHeight - 200);
+    alien = new component(80, 90, "alien.png", 600, 200, "image");
+    
+    cherry = new component(50, 50, "cherries.png", 1150, -70, "image");
+    pretzel = new component(50, 50, "pretzel.png", screenWidth + 300, -70, "image");
+    alien.speedX = 1;
+    alien.gravity = 0;
+    
+    
+    scoreMessage = new component("30px", "Tahoma", "blue", 500, 30, "text");
+    scoreBoard = new component("35px","Tahoma", "white", 30, 30, "text");
+    score = 0;
+    message2 = new component("30px", "monospace", "white", -800, 60, "text");
+    message3 = new component("30px", "monospace", "gray", -800, 100, "text");
+    
+    message4 = new component("30px", "Tmonospace", "gray", -800, 200, "text");
+    message5 = new component("30px", "monospace", "gray", -800, 240, "text");
+    message6 = new component("30px", "monospace", "gray", -800, 280, "text");
+    message7 = new component("30px", "monospace", "gray", -800, 320, "text");
+    message8 = new component("30px", "monospace", "gray", -800, 360, "text");
+    message9 = new component("30px", "monospace", "white", -800, 400, "text");
+    
+    messageMath = new component("25px", "Tahoma", "white", screenWidth, 150, "text");
+    
+    cactus1 = new component(100, 140, "cactus1.png", 300, screenHeight - 180, "image");
+    cactus2 = new component(90, 150, "cactus1.png", 700, screenHeight -200, "image");
+    cactus3 = new component(100, 160, "cactus1.png", 1600, screenHeight - 210, "image");
+    
+    cactusX1 = new component(100, 140, "cactusX.png", 2*screenWidth, screenHeight - 180, "image");
+    cactusX2 = new component(90, 150, "cactusX.png", 2*screenWidth -50, screenHeight -200, "image");
+    
+    cactusY1 = new component(100, 140, "cactusY.png", screenWidth -200, screenHeight - 180, "image");
+    cactusY2 = new component(90, 150, "cactusY.png", screenWidth - 250, screenHeight -200, "image");
+    for(i=0; i < 30; i +=1){
+        cacti.push(new component(90, 150, "cactusY.png", screenWidth + i*Math.random()*100, screenHeight - 200 + 20*Math.random(), "image"));
+    }
+    
+  //  barrier1 = new component(100, 210, "concrete1.png", 800, 0, "image");
+    barrier2 = new component(150, 160, "concrete1.png", 1000, screenHeight - 220, "image");
+  //  barrier3 = new component(150, 160, "concrete1.png", 1350, screenHeight - 220, "image");
+     //tag1 = new component(120, 50, "alienGraf.png", screenWidth -200 , screenHeight - 220, "image");
+    moon = new component(150, 150, "moon.png", 250, screenHeight, "image");
+      barrier4 = new component(300, 160, "concrete1.png", 1350, screenHeight - 220, "image");
+    tag1 = new component(250, 110, "alienGraf.png", 1380 , screenHeight - 160, "image");
+    
+    fuelArm = new component(80,6,"#aaaabb", 300, screenHeight - 120);
+    fuelPump = new component(80, 200, "fuelPump.png", -100, screenHeight - 250, "image");
+    fuelStation = new component(390, 360,"sinclair.png", -150, screenHeight - 420, "image");
+   
+    
+    chemTank1 = new component(120, 400, "chemTank.png", 20, screenHeight-380, "image");
+    chemTank2 = new component(120, 400, "chemTank.png", 160, screenHeight-380, "image");
+    chemTank3 = new component(120, 400, "chemTank.png", 300, screenHeight-380, "image");
+    pipes = new component(500, 80, "pipes.png", 50, screenHeight-400, "image");
+    
+    controller = new component(100, 140, "#111111", 20, screenHeight-160);
+    thruster = 0;
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = screenWidth;
+        this.canvas.height = screenHeight;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20);
+        },
+    clear : function() {
+        this.context.clearRect(originX, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    if (type == "image") {
+        this.image = new Image();
+        this.image.src = color;
+    }
+    this.status = 0;  //0:free,  1:refueling
+    this.width = width;
+    this.height = height;
+    this.angle = 0;
+    this.speedX = 0;
+      
+    this.speedY = 0;    
+    this.x = x;
+    
+    this.y = y; 
+    this.gravity = 0.05;
+    this.gravitySpeed = 0;
+    this.accelx = 0;
+    this.accely = 0;
+    this.bounce = 0.4;
+    this.update = function() {
+        ctx = myGameArea.context;
+       // ctx.save();
+       // ctx.translate(this.x, this.y);        
+        //ctx.rotate(this.angle);
+        if (this.type == "image") {
+            ctx.drawImage(this.image, 
+                this.x, this.y,
+                this.width, this.height);
+    
+        } else if (this.type == "text"){
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+            
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+      //  ctx.restore();
+    }
+    this.newPos = function() {
+        
+        if(this.status == 0){
+            
+        
+        myGamePiece.accely = -thruster/1000.0;
+        titleDrop.accely = this.gravity;
+        cherry.accely = this.gravity;
+        
+        this.speedY += this.gravity + this.accely;
+        //this.speedX += this.accelx;
+             myGamePiece.speedX = myGamePiece.speedX + (controllerX - 100)/8000;
+        if(myGamePiece.speedX > 10){
+            myGamePiece.speedX = 10;
+        }
+        if(myGamePiece.speedX < -10){
+            myGamePiece.speedX = -10;
+        }
+          
+        this.x += this.speedX;
+        this.y += this.speedY; 
+        }
+        if(this.status == 1){
+            myGamePiece.accely = 0;
+            this.speedY = 0;
+        }
+                
+        this.hitBottom();
+        this.hitTop();
+        //this.hitLeft();
+         //this.hitRight();
+        exhaust.x = myGamePiece.x +42;
+        exhaust.y = myGamePiece.y + 140;
+        exLeft.x = myGamePiece.x +25;
+        exLeft.y = myGamePiece.y + 100;
+        exLeft.width = -(controllerX - 100)/2;
+        if( exLeft.width > 0){
+            exLeft.width = 0;
+        }
+        exRight.x = myGamePiece.x + 96;
+        exRight.y = myGamePiece.y + 100;
+        exRight.width =  -(controllerX - 100)/2;
+        if(exRight.width < 0){
+            exRight.width = 0;
+        }
+        
+    }
+
+    this.crashWith = function(otherobj){
+        var left = this.x +30;
+        var right = this.x + this.width - 30;
+        var top = this.y +20;
+        var bottom = this.y + this.height;
+        var otherleft = otherobj.x +20;
+        var otherright = otherobj.x + otherobj.width - 20;
+        var othertop = otherobj.y + 30;
+        var otherbottom = otherobj.y + otherobj.height -20;
+        var crash = true;
+        if ((bottom < othertop) || (top > otherbottom) || (right < otherleft) || (left > otherright )) {
+            crash = false;
+        }
+        
+        return crash;      
+    }
+    this.landOn = function(otherobj){
+        var left = this.x +30;
+        var right = this.x + this.width - 30;
+        
+        var bottom = this.y + this.height;
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + otherobj.width;
+        var othertop = otherobj.y;
+         
+        var land = false;
+        if (( bottom > othertop) && (bottom < (othertop + 5)) && (right < otherright) && (left > otherleft )){
+            
+            if(myGamePiece.speedY > 2.3){
+                score -=2;
+                    myGamePiece.x -= 200;
+                    myGamePiece.y = 20;
+                    myGamePiece.speedY = 0;
+                    const thud = document.getElementById("crash");
+                    thud.play();
+                
+                    return false;
+            }
+            land = true;
+            const chime = document.getElementById("chime");
+            chime.play();
+            
+            thruster = 20;
+            controllerX = 100;
+            hold=true;
+            drawController();
+        }
+        return land;
+        
+    }
+    
+    this.hitBottom = function() {
+        var rockbottom = screenHeight - this.height - 30;
+        if (this.y > rockbottom) {
+            this.y = rockbottom;
+            this.speedY = -(this.speedY * this.bounce);
+        }
+    }
+    this.hitTop = function() {
+        var lid = 2;
+        if (this.y < lid) {
+            this.y = 3;
+            this.speedY = -(this.speedY * this.bounce);
+        }
+    }  
+    
+    this.hitLeft = function() {
+        var left = 2;
+        if (this.x < left) {
+            this.x = 3;
+            this.speedX = -(this.speedX * this.bounce);
+        }
+    }  
+    
+    this.hitRight = function() {
+        var right = myGameArea.canvas.width - this.width;
+        if (this.x > right) {
+            this.x = right-1;
+            this.speedX = -(this.speedX * this.bounce);
+        }
+    } 
+
+    this.makeFlame = function(){
+        this.height = 3.0*((-myGamePiece.accely*1000) - 20) + 5* Math.random();
+        }
+    
+    
+    this.strobeLandingPad = function(){
+        var signal = myGameArea.frameNo % 80;
+        if (signal <=40){
+        landingPad.height = signal/2;
+        }else{
+            landingPad.height = (80 -signal)/2;
+             }
+     }
+    this.getSoda = function(){
+        var count = 0;
+        var signal;
+        gameState = 1;
+        
+        console.log("get soda");
+
+        signal = sodaTime % 20;;    
+        this.width= 120 - 8*signal;
+        this.x = 500 + 4*signal;
+        this.y = 320 - 1.5*signal;
+        this.height = 10 + 3*signal;
+        sodaTime = sodaTime + 1;
+        }
+ 
+} 
+function slope(){
+   var actx = myGameArea.canvas.getContext("2d"); 
+    actx.beginPath();
+   actx.strokeStyle = "#ffffff";
+    actx.moveTo(screenWidth,screenHeight);
+    actx.lineTo(screenWidth + 400, 200);
+    actx.stroke();
+}
+function zap(){
+    var done = 0;
+    var bolt = [];
+    c = myGamePiece.x + 50;
+    d= myGamePiece.y + 50;
+    a= alien.x + 15;
+    b= alien.y + 58;
+    
+    controllerX = 100;
+    controllerY = 470;
+  
+    var actx = myGameArea.canvas.getContext("2d");
+    const audio = document.getElementById("boom");
+   
+    audio.currentTime = 0.01;
+    audio.play();
+    thruster=20;
+  
+    myGamePiece.update();
+    alien.update();
+    actx.strokeStyle = "#ffffdd";
+    var dx = c-a;
+    var dy = d-b; 
+    actx.beginPath();
+    
+    if(!done){
+    while((a < c ) &&  (b < d)){
+        console.log("case 0");
+        actx.moveTo(a,b);
+        a = a + dx*Math.random()/10;
+        b = b + dy*Math.random()/10;
+        actx.lineTo(a,b);
+        actx.stroke();
+        done=1;
+    }
+        
+    }
+    console.log("a0");
+    if(!done){
+    while((a > c ) &&  (b < d)){
+        console.log("case 1");
+        actx.moveTo(a,b);
+        a = a + dx*Math.random()/10;
+        b = b + dy*Math.random()/10;
+        actx.lineTo(a,b);
+        actx.stroke();
+        done=1;
+    }
+    
+    }
+    console.log("a1");
+    if(!done){
+     while((a < c ) &&  (b > d)){
+        console.log("case 2");
+        actx.moveTo(a,b);
+        a = a + dx*Math.random()/10;
+        b = b + dy*Math.random()/10;
+        actx.lineTo(a,b);
+        actx.stroke();
+         done=1;
+    }
+        
+    }
+    console.log("a2");
+     if(!done){
+     while((a > c ) &&  (b > d)){
+        console.log("case 3");
+        actx.moveTo(a,b);
+        a = a + dx*Math.random()/10;
+        b = b + dy*Math.random()/10;
+        actx.lineTo(a,b);
+        actx.stroke();
+         done=1;
+    }
+        
+    } 
+    console.log("a3");
+    
+}
+
+function spinCraft(){
+    var tzero
+ctx.rotate(12 * Math.PI / 180);
+
+    
+}
+function unSpinCraft(){
+    
+ctx.rotate(-12 * Math.PI / 180);
+
+    
+}    
+function updateDashboard(){
+    ctx.fillStyle = "#444444";
+    ctx.fillRect(0 + originX, 0, 200, screenHeight);
+}
+    
+    
+function updateTerraCraft(){
+    myGamePiece.newPos();
+    exhaust.newPos();
+    exhaust.makeFlame(); 
+    
+    exLeft.newPos();
+    exRight.newPos();
+    
+    myGamePiece.update();
+    exhaust.update();
+    exLeft.update();
+    exRight.update();
+ //   updateDashboard();
+    drawController();
+    drawSpeed();
+    
+    if(thruster<40){
+        //audio.currentTime = 0.01;
+    }
+    stabilizeController();
+  
+} 
+    
+function stabilizeController(){
+    if( Math.abs(controllerY - 450) < 1 ){
+    if(controllerY > 450){
+        controllerY = 0.999*controllerY;
+    }
+    else{
+        controllerY = 1.001*controllerY;
+    }
+    }
+}
+
+function checkController(e){
+    
+    var cy = e.offsetY;
+    var cx = e.offsetX;
+    if(!hold){
+    if((cy > 350)&&(cy < 550)&&(cx > 20 )&&(cx < 180 )){
+            controllerX = cx;
+            controllerY = cy;
+        if(thruster>40){
+         const audio = document.getElementById("rocket");
+    var level = (thruster -30)/70;
+        if (level > 1){
+            level=1;
+            
+        }
+         //   console.log(thruster);
+    //console.log(level);        
+    audio.volume=level;
+    audio.play();
+            audio.loop = true;
+    }
+    }
+        }
+       
+}
+    
+    
+function holdController(e){
+    var cy = e.offsetY;
+    var cx = e.offsetX;
+    //console.log("in hold");
+    if((cy > 350)&&(cy < 550)&&(cx > 20 )&&(cx < 180 )){
+        //console.log("in box");
+    if( hold == true){
+        //console.log(hold);
+        hold = false;
+    }else{
+        hold = true;
+    }
+    }
+    }
+
+        
+
+function drawController(){
+    
+    var cx1 = 20 + originX;
+    var cx2 = 180 + originX;
+    var cy1 = 350;
+    var cy2 = 550;
+    
+    // outline
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle="#000000";
+        ctx.fillRect(20 + originX, 350, 160, 200);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = "#aaaaaa";
+     if(!hold){
+        ctx.strokeStyle = "aqua";
+    }
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx1, cy1);
+        ctx.lineTo(cx1, cy2);
+        ctx.stroke();
+        ctx.lineTo(cx2, cy2);
+        ctx.stroke();
+        ctx.lineTo(cx2, cy1);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.stroke();
+     
+    // cross hairs
+        ctx.strokeStyle = "#aaaaaa";
+        ctx.lineWidth = 2;
+        ctx.moveTo(cx1, 450);
+        ctx.lineTo(cx2,450);
+        ctx.stroke();
+        ctx.moveTo((cx1+cx2)/2, cy1);
+        ctx.lineTo((cx1+cx2)/2, cy2 - 30);
+        ctx.stroke();
+    
+    // stick position circle  
+    if(!hold){
+        ctx.strokeStyle = "aqua";
+        thruster = (550 - controllerY)/2;
+        if (thruster<20){
+            thruster = 20;
+            }
+    }
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(controllerX + originX, controllerY, 30, 0, 2*Math.PI);
+        ctx.stroke();
+        if (thruster<20){
+            thruster = 20;
+            }
+        
+       
+        
+        ctx.fillStyle = "#ee0000";
+    
+        ctx.fillRect((controllerX + originX)- 4, 446, 9, 9);
+        ctx.fillStyle = "aqua";
+        ctx.fillRect(96 + originX, controllerY - 4, 9, 9);
+    
+    ctx.font = "22px Tahoma";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("flight controller", 28 + originX, 535);
+        ctx.stroke();
+    if(hold){
+        ctx.fillStyle="#ee0000";
+        ctx.fillText("click to activate", 28 + originX, 370 );
+        ctx.stroke();
+    }
+      
+    //thrustGauge.text = "Thrust : " + thruster;
+    //thrustGauge.x = 30 + originX;
+    //thrustGauge.y = 540;
+    //thrustGauge.update();
+        
+
+    }
+    
+    function drawSpeed(){
+        
+        // black background
+        ctx.globalAlpha = 0.3
+        ctx.strokeStyle = "#000000";
+        ctx.beginPath();
+        ctx.lineWidth = 80;
+        ctx.arc(100 + originX, 250, 40, 0, 2*Math.PI);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        
+        // red zone
+        ctx.strokeStyle = "#ff0000";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(100 + originX, 250, 60, Math.PI/2, Math.PI/2 +1.3);
+        ctx.stroke();
+        // yellow zone
+        ctx.strokeStyle = "#ffff00";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(100 + originX, 250, 60, Math.PI/2 + 1.3, Math.PI/2 +1.8);
+        ctx.stroke();
+        // green zone
+        ctx.strokeStyle = "#00ff00";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(100 + originX, 250, 60, Math.PI/2 + 1.8, Math.PI/2 + 3.14);
+        ctx.stroke();
+        // blue zone
+        ctx.strokeStyle = "#00ffff";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(100 + originX, 250, 60, Math.PI/2 + 3.2, Math.PI/2 + 5.5);
+        ctx.stroke();
+        // white outline
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(100 + originX, 250, 80, 0, 2*Math.PI);
+        ctx.stroke();
+        
+        ctx.font = "16px Tahoma";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("vertical speed", 52 + originX, 270);
+        ctx.stroke();
+        
+        
+        // needle
+        ctx.strokeStyle = "#555555";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(100 + originX, 250);
+        ctx.lineTo(100 + originX + 70*Math.sin(myGamePiece.speedY/2+Math.PI), 250 +70*Math.cos(myGamePiece.speedY/2+Math.PI));
+        ctx.stroke();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(100 + originX, 250);
+        ctx.lineTo(100 + originX + 70*Math.sin(myGamePiece.speedY/2+Math.PI), 250 +70*Math.cos(myGamePiece.speedY/2+Math.PI));
+        ctx.stroke();
+        
+       
+    }
+    
+
+function updateGameArea() {
+    
+
+    if((myGamePiece.x > (screenWidth + originX - 550)) && myGamePiece.speedX > 0){
+        transX = -myGamePiece.speedX;
+    
+    
+        originX = originX - transX;
+        ctx.translate(  transX, 0 );
+    }
+    
+    if((myGamePiece.x < originX + 550) && myGamePiece.speedX < 0){
+        transX = -myGamePiece.speedX;
+    
+        originX = originX - transX;
+        ctx.translate(  transX, 0 );
+    }
+  
+    moon.x = moon.x -0.9*transX;
+    scoreBoard.x = scoreBoard.x - transX;
+    
+        if(gameState > 2){
+            cherry.x = cherry.x - transX;
+        }
+        if(gameState > 3){
+            pretzel.x = pretzel.x - transX;
+        }
+    transX = 0;
+    
+    myGameArea.frameNo += 1;
+    myGameArea.clear();
+    scoreMessage.text="state:" + gameState;
+    scoreBoard.text = "Score:" + score;
+    scoreMessage.update();
+    
+    Title.text="terraCraftSaga";
+   
+    if(gameState > 2){
+    moon.y = moon.y - 0.1; 
+    moon.x = moon.x + 0.05;
+    moon.update();
+    }
+    terra.update();
+    terraY.update();
+    terraHill.update();
+    terraHill2.update();
+    
+    fuelStation.update();
+   // starPop.update();
+    fuelPump.update();
+    
+   // barrier1.update();
+    barrier2.update();
+    barrier4.update();
+    tag1.update();
+    cactus1.update();
+    cactus2.update();
+    cactus3.update();
+    cactusX1.update();
+    cactusX2.update();
+    if (myGamePiece.crashWith(cactus1) ||
+        myGamePiece.crashWith(cactus2) ||
+        myGamePiece.crashWith(cactus3)){
+            
+            const audio = document.getElementById("cactus");
+            audio.play();
+            myGamePiece.speedX = -myGamePiece.speedX;
+            myGamePiece.speedY = -myGamePiece.speedY;
+            
+        }
+    if (myGamePiece.crashWith(barrier2) ||
+        myGamePiece.crashWith(barrier4)){
+            
+            myGamePiece.speedX = -myGamePiece.speedX;
+            myGamePiece.speedY = -myGamePiece.speedY;
+            
+        }
+    
+    
+   
+    
+        message3.text = ">C://terraCraftSaga/controls/variables";
+        
+        
+        message4.text = "> Vertical Speed:    " + myGamePiece.speedY;
+        message5.text = "> Lateral Speed:     " + myGamePiece.speedX;
+        message6.text = "> OriginX:                " + originX;
+        message7.text = "> Thrust:                 " + thruster;
+        message8.text = "> Alien:                  " + alien.x;
+     //   message9.text = "> Thrust:50 equals Gravity.";
+        
+        
+    
+    message3.update();
+    message4.update();
+    message5.update();
+    message6.update();
+    message7.update();
+    message8.update();
+   // message9.update();
+
+   
+    if (gameState == 1){
+        landingPad.x = 800;
+        landingPad.y = screenHeight - 60;
+        landingPad.update();
+        landingPad.width = 200;
+        
+        landingPad.update();
+        landingPad.strobeLandingPad(); 
+        
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+        //spinCraft();
+        updateTerraCraft();
+        //unSpinCraft();
+    
+        if (myGamePiece.landOn(landingPad)){
+            
+            gameState = 2;
+            score = score + 10;
+        return;    
+        }
+        
+        
+    }
+    
+    if (gameState == 2){
+    
+       
+        landingPad.x = 1150;
+        landingPad.y = screenHeight - 60;
+        landingPad.update();
+        landingPad.width = 200;
+        
+        landingPad.update();
+        landingPad.strobeLandingPad();
+        cherry.update();
+        cherry.newPos();
+        
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+        
+        updateTerraCraft();
+        
+    
+        
+        if (myGamePiece.landOn(landingPad)){
+            gameState = 3;
+            score = score + 20;
+            cherry.x = scoreBoard.x - 10;
+            cherry.y = 40;
+        return;    
+        }
+        
+    }
+    if (gameState == 3){
+        
+        holdState = 3;
+        updateTerraCraft();
+        alien.update();
+        
+        alien.x += 1;
+        if (alien.x > 2200){
+            alien.x = 300;
+        }
+        landingPad.x = 1600;
+        landingPad.y = screenHeight -60;
+        landingPad.update();
+        landingPad.strobeLandingPad();
+        pretzel.newPos();
+        pretzel.update();
+        
+       
+        
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+           if(alien.crashWith(myGamePiece)){
+          
+             gameState = 20;
+             return;
+             
+         }
+        
+        
+        if (myGamePiece.landOn(landingPad)){
+            gameState = 4;
+            score = score + 30;
+            pretzel.x = scoreBoard.x - 10;
+            pretzel.y = 100;
+        return;    
+        }
+        
+      
+        
+        
+        
+    }
+    
+    if (gameState == 4){
+        
+        
+        fuelArm.x = fuelPump.x + 5;
+        fuelArm.update();
+        fuelPump.update();
+        message9.text="<<-- Time to refuel."
+        message9.x = screenWidth + 300;
+        message9.update();
+        updateTerraCraft();
+        
+        landingPad.x = fuelPump.x + 60;
+        
+        landingPad.width = 200;
+        landingPad.y = fuelPump.y + 200;
+        landingPad.update();
+        landingPad.strobeLandingPad();
+        
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+        
+        
+         if (myGamePiece.landOn(landingPad)){
+             myGamePiece.status = 1;
+             if (Math.abs(myGamePiece.x - landingPad.x) > 15){
+             myGamePiece.x = myGamePiece.x - (myGamePiece.x - landingPad.x)/10 ;
+                score = score +50;
+             
+            return;
+         }
+            gameState = 5;
+             return;
+            
+        }
+    }
+    if(gameState==5){
+        refuel = 1;
+       
+        landingPad.update();
+        
+        if(actionState==0){
+        fuelArm.width = fuelArm.width + 0.2
+            if (fuelArm.width>120){
+                actionState = 1;
+            }
+            }
+        if(actionState == 1){
+            fuelBarGreen.width = fuelBarGreen.width + 0.2;
+
+            if (fuelBarGreen.width > 198){
+                    actionState = 2;
+            
+            }
+            }
+        if(actionState == 2){
+            fuelArm.width = fuelArm.width - 0.2;
+            if( fuelArm.width < 80){
+                actionState=0;
+                refuel = 0;
+                gameState = 6;
+                myGamePiece.status = 0;
+                return;
+            }
+        }
+        cactus3.update();
+        cactus2.update();
+        cactus1.update();
+        fuelStation.update();
+        fuelArm.update();
+        fuelPump.update();
+        updateTerraCraft();
+        
+    }  
+     if (gameState == 6){
+        holdState = 6;
+        alien.update();
+        
+        alien.x = alien.x + (myGamePiece.x - alien.x)/400;
+         if (alien.x > screenWidth){
+             alien.x = -screenWidth;
+         }
+       alien.y = alien.y + (myGamePiece.y - alien.y)/9000*(Math.abs(myGamePiece.y - alien.y));
+         if (alien.y > 400){
+             alien.y=400;
+         }
+         if((myGameArea.frameNo % 45) < 20){
+
+      
+        wurm.width = wurm.width + 0.5;
+        wurm.height = 10000/wurm.width;
+     
+        
+    }
+    if((myGameArea.frameNo % 45) > 20){
+        
+    }
+        
+        
+    if((myGameArea.frameNo % 45) >34){
+        wurm.x = wurm.x + 2;
+       wurm.width = wurm.width - 1;
+       wurm.height =  10000/wurm.width;
+        
+    }
+    if(wurm.x > screenWidth + 100){
+        wurm.x = -200;
+    }
+      wurm.update();  
+        
+        message9.text=""
+        message9.x = -300;
+        message9.y = 300;
+        //message9.update();
+         
+         
+         if(alien.crashWith(myGamePiece)){
+          
+             gameState = 20;
+             return;
+             
+         }
+        myGamePiece.angle += 1 * Math.PI / 180;
+        updateTerraCraft();
+        
+        
+        landingPad.x = 2*screenWidth;
+        
+        landingPad.width = 200;
+        landingPad.y = screenHeight - 60;
+        landingPad.update();
+        landingPad.strobeLandingPad();
+        
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+        
+     
+        
+        if (myGamePiece.landOn(landingPad)){
+            score = score + 30;
+            gameState = 7;
+        return;    
+        }
+        
+        if (myGamePiece.crashWith(cactus1) ||
+           myGamePiece.crashWith(cactus2) ||
+           myGamePiece.crashWith(cactus3)){
+            
+            myGamePiece.speedX = -myGamePiece.speedX;
+            myGamePiece.speedY = -myGamePiece.speedY;
+            
+        }
+        
+        
+        
+    }   
+    if (gameState == 7){
+        
+        
+        landingPad.update();
+        landingPad.strobeLandingPad();
+        message2.text="Land here";
+        message2.x = landingPad.x + 30;
+        message2.y = landingPad.y + 18;
+        message2.update();
+        updateTerraCraft();
+      
+        alien.x = alien.x + 1;
+         if (alien.x > screenWidth){
+             alien.x = -20;
+            }
+        alien.y = alien.y + Math.random(); 
+             if (alien.y > screenHeight){
+             alien.y = -20;
+             }
+        alien.update();
+        
+        if (myGamePiece.landOn(landingPad)){
+            gameState = 9;
+            landingPad.x = screenWidth*Math.random() -100;
+            landingPad.y = screenHeight - (10 + 300*Math.random());
+            myGamePiece.x = 100;
+            myGamePiece.y = 100;
+        return; 
+        }
+           if(alien.crashWith(myGamePiece)){
+             
+             
+             
+         }
+        
+       
+           }
+        
+    if(gameState==20){
+        zap();
+        console.log("zap");
+        myGamePiece.y = myGamePiece.y + 1;
+        myGamePiece.x = myGamePiece.x +2 - Math.random()*4;
+        alien.y = alien.y - 0.5;
+        alien.x = alien.x - (myGamePiece.x - alien.x)/(Math.abs(myGamePiece.x - alien.x));
+        if(myGamePiece.y > 300){
+            gameState = holdState;
+            score -= 1;
+            return;
+        }
+    }
+     if(gameState==21){
+        zap();
+        myGamePiece.y = myGamePiece.y + 1;
+        myGamePiece.x = myGamePiece.x +2 - Math.random()*4;
+        if(myGamePiece.y > 250){
+            gameState = 1;
+            return;
+        }
+    }  
+    if (gameState == 17){
+        myGameArea.frameNo += 1;
+        scoreMessage.x = 200;
+        scoreMessage.text = "Soda break!";
+            myGamePiece.accelx=0;
+            myGamePiece.accely=0;
+            myGamePiece.speedX=0;
+            myGamePiece.speedY=0;
+        
+        if(sodaTime < 100){
+        
+        myGameArea.clear();
+            scoreMessage.update();
+        starPop.update();
+        landingPad.update();
+        myGamePiece.update();
+        console.log("state1");
+        landingPad.getSoda();
+            scoreMessage.x --;
+        return;
+        }else{
+            landingPad.height=10;
+            landingPad.y = 320;
+            
+            gameState = 3;
+            sodaTime = 0;
+            myGamePiece.y = myGamePiece.y - 30;
+            myGamePiece.speedX = -1;
+            myGamePiece.accelx = 0.01;
+            //myGamePiece.x = myGamePiece.x -100;
+            return;
+        }
+    }
+    if (gameState==8){
+        var digit;
+        myGameArea.clear();
+        titleDrop.text="Gravity";
+        
+        titleDrop.newPos();
+        terra.update();
+        //myGamePiece.update();
+        //myGamePiece.newPos();
+        titleDrop.update();
+        
+        cactus2.x = screenWidth/2 +250;
+        cactus1.x = screenWidth/2 + 200;
+        cactus3.x = 20;
+        cactus2.update();
+        cactus1.update();
+        cactus3.update();
+        
+        message3.x = 40;
+        message3.y = 60;
+        message3.text = "The invisible force that holds us on our planet.";
+        message4.x = 40;
+        message4.y = 150;
+        message4.text = "It is always working on things we drop.";
+        message5.x = 40;
+        message5.y = 190;
+        message5.text = "The farther they fall, the faster they go.";
+        message6.x = 40;
+        message6.y = 230;
+        message6.text = "Gravity can be descibed as 32 feet per second squared.";
+        message7.x = 40;
+        message7.y = 270;
+        message7.text = "Something falls at 32 feet per second after 1 second.";
+        message8.x = 40;
+        message8.y = 310;
+        message8.text = "It falls at 96 feet per second after 3 seconds.";
+        
+        message3.update();
+        message3.update();
+        message4.update();
+        message5.update();
+        message6.update();
+        message7.update();
+        message8.update();
+        
+        messageMath.x = messageMath.x - 3;
+        
+        messageMath.text = "32 ft/s/s                           9.8 m/s/s";
+        //messageMath.update();
+        document.getElementById("Aux1").innerHTML = "GO";
+        document.getElementById("Aux1").style.color = "#eeeeee";
+        document.getElementById("Aux1").style.backgroundColor = "#11dd11";
+        document.getElementById("NAV").style.color = "#88aaff";
+        document.getElementById("NAV").style.backgroundColor = "#000098";
+        document.getElementById("Aux3").style.backgroundImage="cherries.png";
+        document.getElementById("Aux3").innerHTML = "fly";
+        
+        
+        return;
+    }
+
+    
+    if (gameState == 9){
+    
+    myGameArea.clear();
+    moon.update();    
+    terra.y = screenHeight-200;
+    terra.update();
+    myGamePiece.update();
+    alien.update();
+        alien.x = alien.x - 2*Math.random();
+        alien.y = alien.y + 2*Math.random();
+        if(alien.x < -40){
+            alien.x = screenWidth +40;    
+        }
+    if(alien.y > screenHeight +40){
+        alien.y = -10;
+    }
+        
+    if((myGameArea.frameNo % 45) < 20){
+
+      
+        wurm.width = wurm.width + 0.5;
+        wurm.height = 10000/wurm.width;
+     
+        
+    }
+    if((myGameArea.frameNo % 45) > 20){
+        console.log("delay");
+    }
+        
+        
+    if((myGameArea.frameNo % 45) >34){
+        wurm.x = wurm.x + 2;
+       wurm.width = wurm.width - 1;
+       wurm.height =  10000/wurm.width;
+    
+    }
+    if(wurm.x > screenWidth + 100){
+        wurm.x = -200;
+    }
+      wurm.update();  
+        
+        
+        return;
+        
+        
+    }
+    
+      if (gameState == 10){
+    
+    myGameArea.clear();
+    moon.update();    
+    terra.y = screenHeight-200;
+    terra.update();
+    pipes.update();
+    chemTank1.update();
+    chemTank2.update();
+    chemTank3.update();
+}
+//updateTerraCraft();
+scoreBoard.update();
+cherry.update();
+pretzel.update();
+    
+    
+}
+
+
+function nextPage(){
+    gameState = gameState + 1;
+}
+    
+
+function accelerate(n){
+    myGamePiece.gravity = n;
+}
+ 
+
+function moveup() {
+    myGamePiece.accely = -0.1; 
+}
+
+
+
+function moveleft() {
+    myGamePiece.accelx = -0.01; 
+}
+
+function moveright() {
+    myGamePiece.accelx = 0.01; 
+}
+
+function clearmove() {
+    myGamePiece.accelx = 0; 
+    myGamePiece.accely = 0; 
+}
+myGameArea.canvas.addEventListener('mousemove', checkController);
+myGameArea.canvas.addEventListener('click', holdController);    
+</script>
+  <!--  
+<div class="panel">
+   
+ <div class="box" style="text-align:center";>
+   
+   <button class = "terraButton" id = "NAV">NAV</button>
+    <button class = "terraButton" id = "Aux1" onmousedown="nextPage()">Aux1</button>
+    <button class = "terraButton" id = "Aux2">Aux2</button>
+     <button class = "terraButton" id = "Aux3">Aux3</button>
+     <button class = "terraButton" >Aux4</button>
+   <h1 class="terra">Auxiliary Controls</h1>                                                         
+     
+    </div> 
+                                     </div>                             
+-->
+ <audio id="boom" src="boom.wav"></audio>
+<audio id="rocket" src="rocket.wav"></audio> 
+<audio id="cactus" src="cactus.wav"></audio>
+ <audio id="chime" src="chime.mp3"></audio> 
+<audio id="crash" src="crash.wav"></audio>       
+      
+</body>
+</html>
