@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html>
+    <head><meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+        
+    <title>CSS test   </title>
+   <!-- <link rel="stylesheet" href="test.css">
+
+        <link href="https://fonts.googleapis.com/css2?family=Ranchers&display=swap" rel="stylesheet"> 
+-->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+        
+        </script>
+        
+        <script>
+         $(document).ready(function(){
+            $(".alien").click(function(){
+                
+                $(this).toggleClass('pixRed');
+                $(this).removeClass('pixGray');
+                console.log(this);
+            });
+        });
+            
+        $(document).ready(function(){
+            $(".alien").hover(function(){
+                $(this).toggleClass('pixBlue');
+                console.log(this);
+            });
+        });
+            
+        $(document).ready(function(){
+            $("button").click(function(){
+                $(".pixGray").hide();
+                console.log(this); 
+                });
+        });
+            
+            
+        
+        </script>
+        
+    </head>
+    <body>
+        <h1 class = headline id="invaderName">Call it a Name</h1>
+        <div class = "simple">
+        <input type="text" class="textPush" id="newName" placeholder="cute alien name">
+        <h2>Name your Alien</h2>
+        </div>
+        <br>
+      <button name="eraser" class="buttonPush" >Erase grid</button>
+    
+        
+ 
+    
+<style>
+    body{
+   // background-image:  url(RVOinvaders.jpg);
+    background-color: black;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    
+} 
+#wrapper{
+    width:1000px;
+}
+
+header{
+    position:fixed;
+    top:5px;
+    background-color: black;
+    width:100%; 
+    height:120px;
+    z-index:1;
+    padding-right: 10px;
+    
+}
+
+.header_fill{
+    position:relative;
+    left:100px;
+    top:5px;
+    width:700px;
+    height:120px;
+    
+}
+
+.logo{
+    color:white;
+    position:relative
+        top:50px;
+    font-family: Anton;
+    font-style: italic;
+    font-size: 40px;
+    
+    
+}
+.container{
+    position:relative;
+    left:100px;
+    border:3px solid white;
+    width: 700px;
+    height:330px;
+    align-self: center;
+    font-family: Anton;
+    background-color: #ccccdd;
+    opacity: .8;
+    }
+
+
+footer{
+    margin:auto;
+    width:50%;
+   
+    color:white;
+    font-family: Ranchers;
+    font-size: 33px;
+    text-align: center;
+}
+.imgright{
+    border: 2px solid white;
+    height:330px;
+    float:right;
+    opacity:1;
+     }
+.imgleft{
+    border: 2px solid white;
+    height:330px;
+    float:left;
+     }
+.imgRVOberks{
+    left:120px;
+    height:150px;
+    float:left;
+    
+}
+nav li{
+    list-style: none;
+    display: inline-block;
+    background-color: blue;
+    color: white;
+    font-size: 33px;
+    padding: 10px;
+    margin-bottom: 3px;
+}
+#nav_place{
+    top:5px;
+}
+nav a{
+        color:white;
+    }
+    
+}
+
+h1{
+    color: blue;
+    font-family: Anton;
+    font-style: italic;
+    font-size: 44px;
+    text-align:center;
+    
+}
+
+
+.r{
+    text-align: right;
+    padding-right: 10px;
+    
+}
+.bright_description{
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    
+    
+}
+
+.bright_description_r{
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: right;
+    
+}
+
+
+
+a{
+    color:white;
+}
+
+
+a:hover{
+    color:aqua;
+}
+a:active{
+    color:fuchsia;
+}
+section a.button{
+    font-size:30px;
+    text-align: center;
+}
+
+
+    h2{
+        color: white;
+        font-family: Anton;
+        font-style: italic;
+        font-size: 33px;
+        text-align:left;
+        padding-left: 10px;
+        
+    } 
+    .textPush{
+        width:250px;
+        height:50px;
+        font-size:25px;
+        color:blue;
+        font-style: italic;
+    }
+    .buttonPush{
+        width:180px;
+        height:50px;
+        text-decoration-color: aqua;
+        font-size:25px;
+        color:red;
+    }    
+    .simple{
+        border: solid;
+        border-color: azure;
+        width:300px;
+        height:140px;
+        padding: 5px;
+        
+    }
+    .headline{
+    color: blue;
+    font-family: Anton;
+    font-style: italic;
+    font-size: 44px;
+    text-align:left;
+    padding-left: 10px;
+    background:white;
+        }
+    
+    .pixRed{
+        border: none;
+        background-color: red;
+    }
+    
+    .pixBlue{
+        background-color: blue;
+        border:none;
+        opacity:.3;
+    
+    }
+    .pixGray{
+        border: 1px solid white;
+       
+        opacity: .5;
+    }
+   
+  
+   </style>  
+        
+        
+    <script>     
+ 
+        let i=0;
+        var dim=18;
+        while (i < dim*dim){
+        const divElem=document.createElement('div');
+        divElem.style.position="absolute";
+            divElem.className="alien";
+        divElem.style.left=350+(i-((i%dim)+dim))+"px";
+        divElem.style.top= 130 + dim*((i)%dim) +"px";
+        divElem.style.height=dim+"px";
+        divElem.style.width=dim + "px";
+       
+        divElem.classList.add('pixGray');    
+        //divElem.style.borderWidth="1px";
+        //divElem.style.borderColor="gray";
+        //divElem.style.borderStyle="solid";
+           
+        
+        document.body.appendChild(divElem);
+            i= i+1;
+        }
+        var pixList =document.querySelectorAll('.alien');
+        console.log(pixList);
+        
+       spaceName = document.getElementById('newName');
+        console.log(spaceName);
+       
+        
+        spaceName.addEventListener('keypress',function(event){
+                
+            if(event.keyCode===13){
+            console.log(event.keyCode);
+            nameInvader();
+        }
+        })
+        function nameInvader(){
+            
+            
+             document.getElementById("invaderName").innerHTML= spaceName.value;
+        }
+        
+  
+  // *** end Space Invader ****
+        
+        
+        
+        </script>
+    </body>
+
+
+
+
+
+
+
+
+
+
+
+</html>
+
